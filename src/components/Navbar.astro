@@ -1,0 +1,48 @@
+---
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = '/' } = Astro.props;
+
+const navLinks = [
+  { href: '/', label: 'Acasă' },
+  { href: '/categorii', label: 'Categorii' },
+  { href: '/cum-functioneaza', label: 'Cum funcționează' },
+  { href: '/pentru-afaceri', label: 'Pentru afaceri' },
+];
+---
+
+<nav class="nav">
+  <div class="container">
+    <div class="nav__inner">
+      <a href="/" class="nav__logo">LocalPro</a>
+      
+      <ul class="nav__links">
+        {navLinks.map(link => (
+          <li>
+            <a 
+              href={link.href} 
+              class:list={['nav__link', { 'nav__link--active': currentPath === link.href }]}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      
+      <div class="nav__actions">
+        <a href="/cont/autentificare" class="btn btn--ghost">Autentificare</a>
+        <a href="/cont/inregistrare" class="btn btn--primary">Înregistrare</a>
+        
+        <button class="nav__mobile-toggle" aria-label="Meniu" id="mobile-menu-toggle">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>

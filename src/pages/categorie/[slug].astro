@@ -1,0 +1,204 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+
+// Categorii disponibile
+const categoriesData: Record<string, { name: string; icon: string; description: string }> = {
+  'stomatologie': { 
+    name: 'Stomatologie', 
+    icon: '🦷',
+    description: 'Cabinete stomatologice, clinici dentare și specialiști în sănătatea orală.'
+  },
+  'auto': { 
+    name: 'Service Auto', 
+    icon: '🚗',
+    description: 'Service-uri auto, vulcanizări, spălătorii și detailing auto.'
+  },
+  'frizerie': { 
+    name: 'Frizerii & Saloane', 
+    icon: '💇',
+    description: 'Frizerii, saloane de înfrumusețare, coafură și tratamente cosmetice.'
+  },
+  'curatenie': { 
+    name: 'Curățenie', 
+    icon: '🧹',
+    description: 'Servicii de curățenie profesională pentru locuințe și spații comerciale.'
+  },
+  'instalatii': { 
+    name: 'Instalații', 
+    icon: '🔧',
+    description: 'Instalatori, servicii sanitare, termice și reparații instalații.'
+  },
+  'electricieni': { 
+    name: 'Electricieni', 
+    icon: '⚡',
+    description: 'Electricieni autorizați, instalații electrice și reparații.'
+  },
+};
+
+const category = slug ? categoriesData[slug] : null;
+
+if (!category) {
+  return Astro.redirect('/404');
+}
+
+// Mock services data - în producție vine din DB
+const services = [
+  {
+    id: `${slug}-1`,
+    name: 'Exemplu Serviciu Premium',
+    category: category.name,
+    categorySlug: slug,
+    location: 'București, Sector 1',
+    rating: 4.9,
+    reviewCount: 127,
+    price: 'de la 150 lei',
+    isPremium: true,
+    isVerified: true,
+  },
+  {
+    id: `${slug}-2`,
+    name: 'Exemplu Serviciu Verificat',
+    category: category.name,
+    categorySlug: slug,
+    location: 'Cluj-Napoca',
+    rating: 4.7,
+    reviewCount: 89,
+    price: 'de la 100 lei',
+    isPremium: false,
+    isVerified: true,
+  },
+  {
+    id: `${slug}-3`,
+    name: 'Exemplu Serviciu Standard',
+    category: category.name,
+    categorySlug: slug,
+    location: 'Timișoara',
+    rating: 4.5,
+    reviewCount: 45,
+    price: 'de la 80 lei',
+    isPremium: false,
+    isVerified: false,
+  },
+];
+---
+
+<Layout title={`${category.name} - LocalPro`} description={category.description}>
+  <Navbar currentPath={`/categorie/${slug}`} />
+  
+  <main style="padding-top: 100px;">
+    <!-- Category Header -->
+    <section class="section--sm" style="background: var(--bg-secondary);">
+      <div class="container">
+        <div class="flex items-center gap-3 mb-3">
+          <span style="font-size: 3rem;">{category.icon}</span>
+          <div>
+            <nav class="breadcrumb">
+              <a href="/">Acasă</a>
+              <span>/</span>
+              <a href="/categorii">Categorii</a>
+              <span>/</span>
+              <span>{category.name}</span>
+            </nav>
+            <h1 class="heading-lg">{category.name}</h1>
+          </div>
+        </div>
+        <p class="text-secondary" style="max-width: 600px;">{category.description}</p>
+      </div>
+    </section>
+    
+    <!-- Filters -->
+    <section class="section--sm">
+      <div class="container">
+        <div class="filters-bar">
+          <div class="filters-bar__left">
+            <span class="text-muted">{services.length} rezultate</span>
+          </div>
+          <div class="filters-bar__right">
+            <select class="form-input" style="width: auto; padding: 0.5rem 2rem 0.5rem 1rem;">
+              <option>Sortare: Relevantă</option>
+              <option>Rating (descrescător)</option>
+              <option>Preț (crescător)</option>
+              <option>Cele mai multe recenzii</option>
+            </select>
+            <button class="btn btn--ghost btn--sm">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="4" y1="21" x2="4" y2="14"/>
+                <line x1="4" y1="10" x2="4" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12" y2="3"/>
+                <line x1="20" y1="21" x2="20" y2="16"/>
+                <line x1="20" y1="12" x2="20" y2="3"/>
+                <line x1="1" y1="14" x2="7" y2="14"/>
+                <line x1="9" y1="8" x2="15" y2="8"/>
+                <line x1="17" y1="16" x2="23" y2="16"/>
+              </svg>
+              Filtre
+            </button>
+          </div>
+        </div>
+        
+        <!-- Results Grid -->
+        <div class="grid grid-3 mt-3">
+          {services.map(service => (
+            <ServiceCard {...service} />
+          ))}
+        </div>
+        
+        <!-- Pagination -->
+        <div class="pagination">
+          <button class="pagination__btn" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+          <button class="pagination__btn pagination__btn--active">1</button>
+          <button class="pagination__btn">2</button>
+          <button class="pagination__btn">3</button>
+          <button class="pagination__btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <Footer />
+</Layout>
+
+<style>
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+  
+  .breadcrumb a:hover {
+    color: var(--accent-primary);
+  }
+  
+  .filters-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .filters-bar__right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+</style>

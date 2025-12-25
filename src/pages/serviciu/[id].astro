@@ -1,0 +1,435 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+
+export const prerender = false;
+
+const { id } = Astro.params;
+
+// Mock data - în producție vine din DB
+const service = {
+  id,
+  name: 'Dent Smile Studio',
+  category: 'Stomatologie',
+  categorySlug: 'stomatologie',
+  description: 'Clinică stomatologică modernă cu echipamente de ultimă generație. Oferim servicii complete de stomatologie generală, estetică și implantologie. Echipa noastră de medici cu experiență vă garantează tratamente de calitate într-un mediu confortabil și relaxant.',
+  address: 'Str. Victoriei 123, Sector 1',
+  city: 'București',
+  phone: '0721 234 567',
+  email: 'contact@dentsmile.ro',
+  website: 'https://dentsmile.ro',
+  rating: 4.9,
+  reviewCount: 127,
+  isPremium: true,
+  isVerified: true,
+  schedule: {
+    'Luni - Vineri': '09:00 - 20:00',
+    'Sâmbătă': '10:00 - 16:00',
+    'Duminică': 'Închis'
+  },
+  services: [
+    { name: 'Consultație', price: '100 lei', duration: '30 min' },
+    { name: 'Detartraj', price: '150 lei', duration: '45 min' },
+    { name: 'Albire dentară', price: '500 lei', duration: '60 min' },
+    { name: 'Plombare', price: 'de la 200 lei', duration: '30-60 min' },
+    { name: 'Extracție', price: 'de la 150 lei', duration: '30 min' },
+    { name: 'Implant dentar', price: 'de la 2000 lei', duration: '60-90 min' },
+  ],
+  reviews: [
+    {
+      id: '1',
+      author: 'Maria P.',
+      rating: 5,
+      date: '15 Dec 2024',
+      text: 'Excelent! Doctorul a fost foarte atent și m-a făcut să mă simt în siguranță. Recomand cu încredere.',
+    },
+    {
+      id: '2',
+      author: 'Andrei M.',
+      rating: 5,
+      date: '10 Dec 2024',
+      text: 'Servicii de calitate la prețuri corecte. Am făcut un implant și totul a decurs perfect.',
+    },
+    {
+      id: '3',
+      author: 'Elena D.',
+      rating: 4,
+      date: '5 Dec 2024',
+      text: 'Cabinet modern, personal amabil. Așteptarea a fost puțin mai lungă decât mă așteptam.',
+    },
+  ],
+  images: [],
+};
+
+const stars = Array.from({ length: 5 }, (_, i) => i < Math.floor(service.rating));
+---
+
+<Layout title={`${service.name} - LocalPro`}>
+  <Navbar />
+  
+  <main style="padding-top: 80px;">
+    <!-- Hero Section -->
+    <section style="background: var(--bg-secondary); padding: 2rem 0 3rem;">
+      <div class="container">
+        <nav class="breadcrumb mb-2">
+          <a href="/">Acasă</a>
+          <span>/</span>
+          <a href={`/categorie/${service.categorySlug}`}>{service.category}</a>
+          <span>/</span>
+          <span>{service.name}</span>
+        </nav>
+        
+        <div class="service-header">
+          <div class="service-header__info">
+            <div class="flex items-center gap-2 mb-2">
+              {service.isPremium && (
+                <span class="badge badge--warning">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                  Premium
+                </span>
+              )}
+              {service.isVerified && (
+                <span class="badge badge--primary">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  Verificat
+                </span>
+              )}
+            </div>
+            
+            <h1 class="heading-lg mb-2">{service.name}</h1>
+            
+            <div class="flex items-center gap-3 mb-3">
+              <div class="rating">
+                {stars.map((filled) => (
+                  <svg class={`rating-star ${!filled ? 'rating-star--empty' : ''}`} viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                ))}
+                <span class="rating-value">{service.rating}</span>
+                <span class="rating-count">({service.reviewCount} recenzii)</span>
+              </div>
+            </div>
+            
+            <div class="service-header__location">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              {service.address}, {service.city}
+            </div>
+          </div>
+          
+          <div class="service-header__actions">
+            <a href={`/rezervare/${service.id}`} class="btn btn--primary btn--lg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              Rezervă acum
+            </a>
+            <button class="btn btn--ghost btn--lg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              Salvează
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Main Content -->
+    <section class="section">
+      <div class="container">
+        <div class="service-grid">
+          <!-- Left Column -->
+          <div class="service-main">
+            <!-- Description -->
+            <div class="card mb-3">
+              <h2 class="heading-sm mb-2">Despre</h2>
+              <p class="text-secondary">{service.description}</p>
+            </div>
+            
+            <!-- Services & Prices -->
+            <div class="card mb-3">
+              <h2 class="heading-sm mb-2">Servicii și prețuri</h2>
+              <div class="services-list">
+                {service.services.map(s => (
+                  <div class="service-item">
+                    <div class="service-item__info">
+                      <span class="service-item__name">{s.name}</span>
+                      <span class="service-item__duration">{s.duration}</span>
+                    </div>
+                    <span class="service-item__price">{s.price}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <!-- Reviews -->
+            <div class="card">
+              <div class="flex items-center justify-between mb-3">
+                <h2 class="heading-sm">Recenzii ({service.reviewCount})</h2>
+                <button class="btn btn--ghost btn--sm">Scrie o recenzie</button>
+              </div>
+              
+              <div class="reviews-list">
+                {service.reviews.map(review => (
+                  <div class="review-card">
+                    <div class="review-card__header">
+                      <div class="review-card__avatar">{review.author[0]}</div>
+                      <div class="review-card__author">
+                        <div class="review-card__name">{review.author}</div>
+                        <div class="review-card__date">{review.date}</div>
+                      </div>
+                      <div class="rating" style="margin-left: auto;">
+                        {Array.from({ length: 5 }, (_, i) => (
+                          <svg class={`rating-star ${i >= review.rating ? 'rating-star--empty' : ''}`} viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                          </svg>
+                        ))}
+                      </div>
+                    </div>
+                    <p class="review-card__text">{review.text}</p>
+                  </div>
+                ))}
+              </div>
+              
+              <button class="btn btn--ghost btn--full mt-3">Vezi toate recenziile</button>
+            </div>
+          </div>
+          
+          <!-- Sidebar -->
+          <aside class="service-sidebar">
+            <!-- Contact Card -->
+            <div class="card sidebar-card">
+              <h3 class="heading-sm mb-3">Contact</h3>
+              
+              <div class="contact-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+                <a href={`tel:${service.phone}`}>{service.phone}</a>
+              </div>
+              
+              <div class="contact-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                <a href={`mailto:${service.email}`}>{service.email}</a>
+              </div>
+              
+              <div class="contact-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="2" y1="12" x2="22" y2="12"/>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                </svg>
+                <a href={service.website} target="_blank" rel="noopener">{service.website.replace('https://', '')}</a>
+              </div>
+            </div>
+            
+            <!-- Schedule Card -->
+            <div class="card sidebar-card">
+              <h3 class="heading-sm mb-3">Program</h3>
+              
+              <div class="schedule-list">
+                {Object.entries(service.schedule).map(([day, hours]) => (
+                  <div class="schedule-item">
+                    <span class="schedule-item__day">{day}</span>
+                    <span class={`schedule-item__hours ${hours === 'Închis' ? 'schedule-item__hours--closed' : ''}`}>
+                      {hours}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <!-- Map placeholder -->
+            <div class="card sidebar-card">
+              <h3 class="heading-sm mb-2">Locație</h3>
+              <div class="map-placeholder">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+                <p class="text-muted text-sm mt-2">Hartă interactivă</p>
+              </div>
+              <a href={`https://maps.google.com/?q=${encodeURIComponent(service.address + ', ' + service.city)}`} 
+                 target="_blank" 
+                 rel="noopener"
+                 class="btn btn--ghost btn--full btn--sm mt-2">
+                Deschide în Google Maps
+              </a>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <Footer />
+</Layout>
+
+<style>
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+  
+  .breadcrumb a:hover {
+    color: var(--accent-primary);
+  }
+  
+  .service-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  
+  .service-header__location {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+  }
+  
+  .service-header__actions {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .service-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 2rem;
+  }
+  
+  @media (max-width: 1024px) {
+    .service-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .services-list {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .service-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .service-item:last-child {
+    border-bottom: none;
+  }
+  
+  .service-item__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .service-item__name {
+    font-weight: 500;
+  }
+  
+  .service-item__duration {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  
+  .service-item__price {
+    font-weight: 600;
+    color: var(--accent-primary);
+  }
+  
+  .reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .review-card {
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+  }
+  
+  .sidebar-card {
+    margin-bottom: 1.5rem;
+  }
+  
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
+  }
+  
+  .contact-item:last-child {
+    border-bottom: none;
+  }
+  
+  .contact-item a {
+    color: var(--text-primary);
+    transition: color var(--transition-fast);
+  }
+  
+  .contact-item a:hover {
+    color: var(--accent-primary);
+  }
+  
+  .schedule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .schedule-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+  }
+  
+  .schedule-item__day {
+    color: var(--text-secondary);
+  }
+  
+  .schedule-item__hours {
+    font-weight: 500;
+  }
+  
+  .schedule-item__hours--closed {
+    color: var(--accent-danger);
+  }
+  
+  .map-placeholder {
+    height: 150px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+</style>

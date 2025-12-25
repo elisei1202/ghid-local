@@ -1,0 +1,183 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+export const prerender = false;
+
+// Mock stats - în producție vin din DB
+const stats = [
+  { label: 'Total Servicii', value: '1,234', trend: '+12%', trendUp: true, icon: 'primary' },
+  { label: 'Rezervări Luna Asta', value: '456', trend: '+8%', trendUp: true, icon: 'secondary' },
+  { label: 'Recenzii Noi', value: '89', trend: '+23%', trendUp: true, icon: 'warning' },
+  { label: 'Venituri (RON)', value: '12,450', trend: '-3%', trendUp: false, icon: 'success' },
+];
+
+const recentBookings = [
+  { id: '1', service: 'Dent Smile Studio', client: 'Maria P.', date: '23 Dec 2024', time: '10:00', status: 'confirmed' },
+  { id: '2', service: 'Auto Expert Service', client: 'Andrei M.', date: '23 Dec 2024', time: '14:30', status: 'pending' },
+  { id: '3', service: 'Elegant Hair Studio', client: 'Elena D.', date: '24 Dec 2024', time: '09:00', status: 'confirmed' },
+  { id: '4', service: 'Clean Pro Services', client: 'Ion V.', date: '24 Dec 2024', time: '11:00', status: 'cancelled' },
+  { id: '5', service: 'Instalații Rapide', client: 'Ana S.', date: '25 Dec 2024', time: '16:00', status: 'pending' },
+];
+
+const recentReviews = [
+  { id: '1', service: 'Dent Smile Studio', author: 'Maria P.', rating: 5, text: 'Excelent! Recomand cu încredere.' },
+  { id: '2', service: 'Auto Expert Service', author: 'Andrei M.', rating: 4, text: 'Servicii bune, prețuri ok.' },
+  { id: '3', service: 'Clean Pro Services', author: 'Elena D.', rating: 5, text: 'Super curățenie!' },
+];
+
+const statusLabels: Record<string, { text: string; class: string }> = {
+  confirmed: { text: 'Confirmată', class: 'badge--success' },
+  pending: { text: 'În așteptare', class: 'badge--warning' },
+  cancelled: { text: 'Anulată', class: 'badge--danger' },
+};
+---
+
+<AdminLayout title="Dashboard" currentPage="dashboard">
+  <header class="admin-header">
+    <div>
+      <h1 class="admin-header__title">Dashboard</h1>
+      <p class="text-muted">Bine ai venit! Iată o privire de ansamblu asupra afacerii tale.</p>
+    </div>
+    <div class="admin-header__actions">
+      <button class="btn btn--ghost">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Export
+      </button>
+      <button class="btn btn--primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Adaugă serviciu
+      </button>
+    </div>
+  </header>
+  
+  <!-- Stats Grid -->
+  <div class="admin-stats">
+    {stats.map(stat => (
+      <div class="admin-stat-card">
+        <div class="admin-stat-card__header">
+          <div class={`admin-stat-card__icon admin-stat-card__icon--${stat.icon}`}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              {stat.icon === 'primary' && <><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></>}
+              {stat.icon === 'secondary' && <><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></>}
+              {stat.icon === 'warning' && <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>}
+              {stat.icon === 'success' && <><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></>}
+            </svg>
+          </div>
+          <span class={`admin-stat-card__trend admin-stat-card__trend--${stat.trendUp ? 'up' : 'down'}`}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              {stat.trendUp 
+                ? <><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></>
+                : <><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></>
+              }
+            </svg>
+            {stat.trend}
+          </span>
+        </div>
+        <div class="admin-stat-card__value">{stat.value}</div>
+        <div class="admin-stat-card__label">{stat.label}</div>
+      </div>
+    ))}
+  </div>
+  
+  <!-- Tables Row -->
+  <div class="grid grid-2 mt-3">
+    <!-- Recent Bookings -->
+    <div class="admin-table-wrapper">
+      <div class="admin-table-header">
+        <h2 class="admin-table-title">Rezervări Recente</h2>
+        <a href="/admin/rezervari" class="btn btn--ghost btn--sm">Vezi toate</a>
+      </div>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Serviciu</th>
+            <th>Client</th>
+            <th>Data</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {recentBookings.map(booking => (
+            <tr>
+              <td class="truncate" style="max-width: 150px;">{booking.service}</td>
+              <td>{booking.client}</td>
+              <td>{booking.date}, {booking.time}</td>
+              <td>
+                <span class={`badge ${statusLabels[booking.status].class}`}>
+                  {statusLabels[booking.status].text}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Recent Reviews -->
+    <div class="admin-table-wrapper">
+      <div class="admin-table-header">
+        <h2 class="admin-table-title">Recenzii Recente</h2>
+        <a href="/admin/recenzii" class="btn btn--ghost btn--sm">Vezi toate</a>
+      </div>
+      <div style="padding: 1rem;">
+        {recentReviews.map(review => (
+          <div class="review-item">
+            <div class="review-item__header">
+              <strong>{review.service}</strong>
+              <div class="rating">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <svg 
+                    class={`rating-star ${i >= review.rating ? 'rating-star--empty' : ''}`} 
+                    viewBox="0 0 24 24" 
+                    fill="currentColor"
+                    style="width: 14px; height: 14px;"
+                  >
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                ))}
+              </div>
+            </div>
+            <p class="review-item__text">{review.text}</p>
+            <span class="review-item__author">— {review.author}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<style>
+  .review-item {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .review-item:last-child {
+    border-bottom: none;
+  }
+  
+  .review-item__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .review-item__text {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .review-item__author {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+</style>

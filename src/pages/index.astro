@@ -1,0 +1,330 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import CategoryCard from '../components/CategoryCard.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+
+const categories = [
+  { name: 'Stomatologie', slug: 'stomatologie', icon: '🦷', count: 245, colorClass: 'category-card__icon--dental' },
+  { name: 'Service Auto', slug: 'auto', icon: '🚗', count: 189, colorClass: 'category-card__icon--auto' },
+  { name: 'Frizerii & Saloane', slug: 'frizerie', icon: '💇', count: 312, colorClass: 'category-card__icon--beauty' },
+  { name: 'Curățenie', slug: 'curatenie', icon: '🧹', count: 156, colorClass: 'category-card__icon--cleaning' },
+  { name: 'Instalații', slug: 'instalatii', icon: '🔧', count: 98, colorClass: 'category-card__icon--plumbing' },
+  { name: 'Electricieni', slug: 'electricieni', icon: '⚡', count: 134, colorClass: 'category-card__icon--electric' },
+];
+
+const featuredServices = [
+  {
+    id: 'dent-smile-studio',
+    name: 'Dent Smile Studio',
+    category: 'Stomatologie',
+    categorySlug: 'stomatologie',
+    location: 'București, Sector 1',
+    rating: 4.9,
+    reviewCount: 127,
+    price: 'de la 150 lei',
+    isPremium: true,
+    isVerified: true,
+  },
+  {
+    id: 'auto-expert-service',
+    name: 'Auto Expert Service',
+    category: 'Service Auto',
+    categorySlug: 'auto',
+    location: 'Cluj-Napoca',
+    rating: 4.8,
+    reviewCount: 89,
+    price: 'de la 100 lei',
+    isPremium: true,
+    isVerified: true,
+  },
+  {
+    id: 'elegant-hair-studio',
+    name: 'Elegant Hair Studio',
+    category: 'Frizerie',
+    categorySlug: 'frizerie',
+    location: 'Timișoara',
+    rating: 4.7,
+    reviewCount: 203,
+    price: 'de la 50 lei',
+    isPremium: false,
+    isVerified: true,
+  },
+  {
+    id: 'clean-pro-services',
+    name: 'Clean Pro Services',
+    category: 'Curățenie',
+    categorySlug: 'curatenie',
+    location: 'București, Sector 3',
+    rating: 4.6,
+    reviewCount: 64,
+    price: 'de la 200 lei',
+    isPremium: true,
+    isVerified: false,
+  },
+  {
+    id: 'instalatii-rapide',
+    name: 'Instalații Rapide SRL',
+    category: 'Instalații',
+    categorySlug: 'instalatii',
+    location: 'Iași',
+    rating: 4.5,
+    reviewCount: 45,
+    price: 'de la 80 lei',
+    isPremium: false,
+    isVerified: true,
+  },
+  {
+    id: 'electro-master',
+    name: 'Electro Master',
+    category: 'Electricieni',
+    categorySlug: 'electricieni',
+    location: 'Brașov',
+    rating: 4.8,
+    reviewCount: 78,
+    price: 'de la 120 lei',
+    isPremium: true,
+    isVerified: true,
+  },
+];
+
+const cities = [
+  'București',
+  'Cluj-Napoca',
+  'Timișoara',
+  'Iași',
+  'Constanța',
+  'Brașov',
+  'Craiova',
+  'Galați',
+];
+---
+
+<Layout title="LocalPro - Găsește Cei Mai Buni Profesioniști Locali">
+  <Navbar currentPath="/" />
+  
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero__content">
+        <div class="hero__badge">
+          <span class="hero__badge-dot"></span>
+          Peste 1000 de profesioniști verificați
+        </div>
+        
+        <h1 class="heading-xl hero__title">
+          Găsește profesioniștii<br>
+          <span>de care ai nevoie</span>
+        </h1>
+        
+        <p class="hero__subtitle">
+          Recenzii reale, rezervări simple și profesioniști verificați pentru toate serviciile locale de care ai nevoie.
+        </p>
+        
+        <!-- Search Box -->
+        <div class="search-box">
+          <div class="search-box__input-wrapper">
+            <svg class="search-box__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input 
+              type="text" 
+              class="search-box__input" 
+              placeholder="Ce serviciu cauți?"
+              id="search-input"
+            >
+          </div>
+          
+          <div class="search-box__divider"></div>
+          
+          <div class="search-box__location">
+            <svg class="search-box__location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <select class="search-box__select" id="city-select">
+              <option value="">Toate orașele</option>
+              {cities.map(city => (
+                <option value={city.toLowerCase()}>{city}</option>
+              ))}
+            </select>
+          </div>
+          
+          <button class="search-box__btn" id="search-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+            Caută
+          </button>
+        </div>
+        
+        <!-- Stats -->
+        <div class="hero__stats">
+          <div class="hero__stat">
+            <div class="hero__stat-value">1,200+</div>
+            <div class="hero__stat-label">Profesioniști</div>
+          </div>
+          <div class="hero__stat">
+            <div class="hero__stat-value">15,000+</div>
+            <div class="hero__stat-label">Recenzii</div>
+          </div>
+          <div class="hero__stat">
+            <div class="hero__stat-value">50,000+</div>
+            <div class="hero__stat-label">Rezervări</div>
+          </div>
+          <div class="hero__stat">
+            <div class="hero__stat-value">4.8</div>
+            <div class="hero__stat-label">Rating mediu</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Categories Section -->
+  <section class="section" id="categorii">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Categorii</span>
+        <h2 class="heading-lg section-title">Explorează serviciile</h2>
+        <p class="section-subtitle">
+          Găsește profesioniștii potriviți pentru orice nevoie, de la stomatologie la service auto.
+        </p>
+      </div>
+      
+      <div class="grid grid-3">
+        {categories.map(cat => (
+          <CategoryCard {...cat} />
+        ))}
+      </div>
+    </div>
+  </section>
+  
+  <!-- Featured Services Section -->
+  <section class="section" style="background: var(--bg-secondary);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Recomandate</span>
+        <h2 class="heading-lg section-title">Profesioniști de top</h2>
+        <p class="section-subtitle">
+          Cei mai apreciați furnizori de servicii din comunitatea noastră.
+        </p>
+      </div>
+      
+      <div class="grid grid-3">
+        {featuredServices.map(service => (
+          <ServiceCard {...service} />
+        ))}
+      </div>
+      
+      <div class="text-center mt-4">
+        <a href="/categorii" class="btn btn--secondary btn--lg">
+          Vezi toate serviciile
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+  
+  <!-- How it Works Section -->
+  <section class="section" id="cum-functioneaza">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Simplu și rapid</span>
+        <h2 class="heading-lg section-title">Cum funcționează</h2>
+        <p class="section-subtitle">
+          În doar 3 pași simpli poți găsi și rezerva serviciul de care ai nevoie.
+        </p>
+      </div>
+      
+      <div class="grid grid-3">
+        <div class="card card--hover">
+          <div class="step-number">01</div>
+          <h3 class="heading-sm mb-2">Caută serviciul</h3>
+          <p class="text-secondary">
+            Folosește bara de căutare pentru a găsi serviciul dorit în orașul tău.
+          </p>
+        </div>
+        
+        <div class="card card--hover">
+          <div class="step-number">02</div>
+          <h3 class="heading-sm mb-2">Compară opțiuni</h3>
+          <p class="text-secondary">
+            Citește recenzii reale, compară prețuri și verifică disponibilitatea.
+          </p>
+        </div>
+        
+        <div class="card card--hover">
+          <div class="step-number">03</div>
+          <h3 class="heading-sm mb-2">Rezervă online</h3>
+          <p class="text-secondary">
+            Alege data și ora potrivită și confirmă rezervarea instant.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- CTA Section -->
+  <section class="section" style="background: var(--bg-secondary);">
+    <div class="container container--sm">
+      <div class="card text-center" style="padding: 4rem; border-color: var(--accent-primary);">
+        <h2 class="heading-lg mb-2">Ești furnizor de servicii?</h2>
+        <p class="text-secondary mb-4" style="max-width: 500px; margin-left: auto; margin-right: auto;">
+          Înscrie-ți afacerea pe LocalPro și ajunge la mii de clienți noi din zona ta.
+        </p>
+        <div class="flex justify-center gap-2">
+          <a href="/pentru-afaceri" class="btn btn--primary btn--lg">
+            Listează-ți afacerea
+          </a>
+          <a href="/tarife" class="btn btn--ghost btn--lg">
+            Vezi tarifele
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <Footer />
+</Layout>
+
+<style>
+  .step-number {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 700;
+    background: var(--gradient-hero);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    line-height: 1;
+  }
+</style>
+
+<script>
+  // Search functionality
+  const searchBtn = document.getElementById('search-btn');
+  const searchInput = document.getElementById('search-input') as HTMLInputElement;
+  const citySelect = document.getElementById('city-select') as HTMLSelectElement;
+  
+  searchBtn?.addEventListener('click', () => {
+    const query = searchInput?.value || '';
+    const city = citySelect?.value || '';
+    const params = new URLSearchParams();
+    if (query) params.set('q', query);
+    if (city) params.set('oras', city);
+    window.location.href = `/cautare?${params.toString()}`;
+  });
+  
+  searchInput?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      searchBtn?.click();
+    }
+  });
+</script>

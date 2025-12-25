@@ -1,0 +1,24 @@
+---
+interface Props {
+  name: string;
+  slug: string;
+  icon: string;
+  count: number;
+  colorClass: string;
+}
+
+const { name, slug, icon, count, colorClass } = Astro.props;
+---
+
+<a href={`/categorie/${slug}`} class="category-card">
+  <div class={`category-card__icon ${colorClass}`}>
+    {icon}
+  </div>
+  <h3 class="category-card__name">{name}</h3>
+  <p class="category-card__count">{count} profesioniști</p>
+  <div class="category-card__arrow">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M5 12h14M12 5l7 7-7 7"/>
+    </svg>
+  </div>
+</a>

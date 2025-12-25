@@ -1,0 +1,694 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+---
+
+<Layout title="Înregistrare - LocalPro">
+  <Navbar />
+  
+  <main class="auth-page">
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-header">
+          <a href="/" class="auth-logo">LocalPro</a>
+          <h1>Creează un cont</h1>
+          <p class="text-muted">Înregistrează-te pentru a rezerva servicii locale</p>
+        </div>
+        
+        <div class="account-type-selector" id="type-selector">
+          <button type="button" class="type-btn type-btn--active" data-type="user">
+            <div class="type-btn__icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div class="type-btn__content">
+              <span class="type-btn__title">Client</span>
+              <span class="type-btn__desc">Caut servicii locale</span>
+            </div>
+          </button>
+          <button type="button" class="type-btn" data-type="provider">
+            <div class="type-btn__icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+            </div>
+            <div class="type-btn__content">
+              <span class="type-btn__title">Furnizor</span>
+              <span class="type-btn__desc">Ofer servicii locale</span>
+            </div>
+          </button>
+        </div>
+        
+        <form class="auth-form" id="register-form">
+          <input type="hidden" name="accountType" id="accountType" value="user" />
+          
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label form-label--required" for="firstName">Prenume</label>
+              <input 
+                type="text" 
+                id="firstName" 
+                name="firstName" 
+                class="form-input" 
+                placeholder="Ion"
+                required 
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label form-label--required" for="lastName">Nume</label>
+              <input 
+                type="text" 
+                id="lastName" 
+                name="lastName" 
+                class="form-input" 
+                placeholder="Popescu"
+                required 
+              />
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label form-label--required" for="email">Email</label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              class="form-input" 
+              placeholder="exemplu@email.ro"
+              required 
+            />
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label form-label--required" for="phone">Telefon</label>
+            <input 
+              type="tel" 
+              id="phone" 
+              name="phone" 
+              class="form-input" 
+              placeholder="07XX XXX XXX"
+              pattern="^(\+40|0)[0-9]{9}$"
+              required 
+            />
+            <span class="form-hint">Format: 07XX XXX XXX sau +40XXX XXX XXX</span>
+          </div>
+          
+          <!-- Provider-only fields -->
+          <div class="provider-fields" id="provider-fields" style="display: none;">
+            <div class="form-group">
+              <label class="form-label form-label--required" for="businessName">Numele afacerii</label>
+              <input 
+                type="text" 
+                id="businessName" 
+                name="businessName" 
+                class="form-input" 
+                placeholder="Exemplu SRL"
+              />
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label form-label--required" for="category">Categorie servicii</label>
+              <select id="category" name="category" class="form-input form-select">
+                <option value="">Selectează categoria</option>
+                <option value="stomatologie">🦷 Stomatologie</option>
+                <option value="auto">🚗 Service Auto</option>
+                <option value="frizerie">💇 Frizerii & Saloane</option>
+                <option value="curatenie">🧹 Curățenie</option>
+                <option value="instalatii">🔧 Instalații</option>
+                <option value="electricieni">⚡ Electricieni</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label form-label--required" for="city">Oraș</label>
+              <select id="city" name="city" class="form-input form-select">
+                <option value="">Selectează orașul</option>
+                <option value="bucuresti">București</option>
+                <option value="cluj-napoca">Cluj-Napoca</option>
+                <option value="timisoara">Timișoara</option>
+                <option value="iasi">Iași</option>
+                <option value="constanta">Constanța</option>
+                <option value="brasov">Brașov</option>
+                <option value="craiova">Craiova</option>
+                <option value="galati">Galați</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label form-label--required" for="password">Parolă</label>
+            <div class="password-wrapper">
+              <input 
+                type="password" 
+                id="password" 
+                name="password" 
+                class="form-input" 
+                placeholder="Minim 8 caractere"
+                minlength="8"
+                required 
+              />
+              <button type="button" class="password-toggle" data-target="password">
+                <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg class="eye-closed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+              </button>
+            </div>
+            <div class="password-strength" id="password-strength">
+              <div class="password-strength__bar"></div>
+              <span class="password-strength__text"></span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label form-label--required" for="confirmPassword">Confirmă parola</label>
+            <div class="password-wrapper">
+              <input 
+                type="password" 
+                id="confirmPassword" 
+                name="confirmPassword" 
+                class="form-input" 
+                placeholder="Repetă parola"
+                required 
+              />
+              <button type="button" class="password-toggle" data-target="confirmPassword">
+                <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg class="eye-closed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+              </button>
+            </div>
+            <span class="form-error" id="password-match-error" style="display: none;">Parolele nu coincid</span>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-checkbox">
+              <input type="checkbox" name="terms" id="terms" required />
+              <span>Sunt de acord cu <a href="/termeni" target="_blank">Termenii și condițiile</a> și <a href="/confidentialitate" target="_blank">Politica de confidențialitate</a></span>
+            </label>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-checkbox">
+              <input type="checkbox" name="newsletter" id="newsletter" />
+              <span>Vreau să primesc noutăți și oferte speciale (opțional)</span>
+            </label>
+          </div>
+          
+          <button type="submit" class="btn btn--primary btn--full btn--lg" id="submit-btn">
+            <span class="btn-text">Creează cont</span>
+            <span class="btn-loader" style="display: none;">
+              <svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" opacity="0.25"/>
+                <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
+              </svg>
+              Se procesează...
+            </span>
+          </button>
+        </form>
+        
+        <div class="auth-divider">
+          <span>sau continuă cu</span>
+        </div>
+        
+        <div class="auth-social">
+          <button type="button" class="btn btn--ghost social-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Google
+          </button>
+          <button type="button" class="btn btn--ghost social-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#1877F2">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+            Facebook
+          </button>
+        </div>
+        
+        <p class="auth-footer">
+          Ai deja cont? <a href="/cont/autentificare">Autentifică-te</a>
+        </p>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    padding-top: 120px;
+    padding-bottom: 4rem;
+  }
+  
+  .auth-container {
+    width: 100%;
+    max-width: 520px;
+  }
+  
+  .auth-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 2.5rem;
+  }
+  
+  .auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .auth-logo {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    background: var(--gradient-hero);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+  }
+  
+  .auth-header h1 {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Account Type Selector */
+  .account-type-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .type-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+  }
+  
+  .type-btn:hover {
+    border-color: var(--text-muted);
+    color: var(--text-primary);
+  }
+  
+  .type-btn--active {
+    border-color: var(--accent-primary);
+    background: rgba(0, 212, 170, 0.08);
+  }
+  
+  .type-btn--active .type-btn__icon {
+    color: var(--accent-primary);
+  }
+  
+  .type-btn--active .type-btn__title {
+    color: var(--accent-primary);
+  }
+  
+  .type-btn__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    background: var(--bg-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  .type-btn__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .type-btn__title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-primary);
+  }
+  
+  .type-btn__desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  
+  /* Form */
+  .auth-form {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  
+  .provider-fields {
+    padding: 1.5rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+    border: 1px dashed var(--border-color);
+  }
+  
+  .provider-fields .form-group:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* Password */
+  .password-wrapper {
+    position: relative;
+  }
+  
+  .password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .password-toggle:hover {
+    color: var(--text-primary);
+  }
+  
+  .password-strength {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .password-strength__bar {
+    flex: 1;
+    height: 4px;
+    background: var(--border-color);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .password-strength__bar::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: var(--strength, 0%);
+    background: var(--strength-color, var(--border-color));
+    transition: all 0.3s ease;
+    border-radius: 2px;
+  }
+  
+  .password-strength__text {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    min-width: 60px;
+  }
+  
+  /* Checkboxes */
+  .form-checkbox a {
+    color: var(--accent-primary);
+  }
+  
+  .form-checkbox a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Submit Button */
+  .btn-loader {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .spinner {
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Divider */
+  .auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+  
+  .auth-divider::before,
+  .auth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+  }
+  
+  /* Social */
+  .auth-social {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  
+  .social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  /* Footer */
+  .auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: var(--text-muted);
+  }
+  
+  .auth-footer a {
+    color: var(--accent-primary);
+    font-weight: 500;
+  }
+  
+  .auth-footer a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Responsive */
+  @media (max-width: 540px) {
+    .auth-card {
+      padding: 1.5rem;
+    }
+    
+    .account-type-selector {
+      grid-template-columns: 1fr;
+    }
+    
+    .form-row-2 {
+      grid-template-columns: 1fr;
+    }
+    
+    .auth-social {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const typeBtns = document.querySelectorAll('.type-btn');
+    const accountTypeInput = document.getElementById('accountType') as HTMLInputElement;
+    const providerFields = document.getElementById('provider-fields') as HTMLElement;
+    const form = document.getElementById('register-form') as HTMLFormElement;
+    const passwordInput = document.getElementById('password') as HTMLInputElement;
+    const confirmPasswordInput = document.getElementById('confirmPassword') as HTMLInputElement;
+    const passwordMatchError = document.getElementById('password-match-error') as HTMLElement;
+    const passwordStrength = document.getElementById('password-strength') as HTMLElement;
+    const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+    
+    // Account type toggle
+    typeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        typeBtns.forEach(b => b.classList.remove('type-btn--active'));
+        btn.classList.add('type-btn--active');
+        const type = btn.getAttribute('data-type') || 'user';
+        accountTypeInput.value = type;
+        
+        if (type === 'provider') {
+          providerFields.style.display = 'block';
+          providerFields.querySelectorAll('input, select').forEach(el => {
+            el.setAttribute('required', 'true');
+          });
+        } else {
+          providerFields.style.display = 'none';
+          providerFields.querySelectorAll('input, select').forEach(el => {
+            el.removeAttribute('required');
+          });
+        }
+      });
+    });
+    
+    // Password toggle
+    document.querySelectorAll('.password-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const input = document.getElementById(targetId!) as HTMLInputElement;
+        const eyeOpen = btn.querySelector('.eye-open') as SVGElement;
+        const eyeClosed = btn.querySelector('.eye-closed') as SVGElement;
+        
+        if (input.type === 'password') {
+          input.type = 'text';
+          eyeOpen.style.display = 'none';
+          eyeClosed.style.display = 'block';
+        } else {
+          input.type = 'password';
+          eyeOpen.style.display = 'block';
+          eyeClosed.style.display = 'none';
+        }
+      });
+    });
+    
+    // Password strength checker
+    passwordInput.addEventListener('input', () => {
+      const password = passwordInput.value;
+      let strength = 0;
+      let text = '';
+      let color = '';
+      
+      if (password.length >= 8) strength += 25;
+      if (password.match(/[a-z]/)) strength += 25;
+      if (password.match(/[A-Z]/)) strength += 25;
+      if (password.match(/[0-9]/) || password.match(/[^a-zA-Z0-9]/)) strength += 25;
+      
+      if (strength <= 25) {
+        text = 'Slabă';
+        color = '#ef4444';
+      } else if (strength <= 50) {
+        text = 'Medie';
+        color = '#f59e0b';
+      } else if (strength <= 75) {
+        text = 'Bună';
+        color = '#22c55e';
+      } else {
+        text = 'Puternică';
+        color = '#00d4aa';
+      }
+      
+      const bar = passwordStrength.querySelector('.password-strength__bar') as HTMLElement;
+      const textEl = passwordStrength.querySelector('.password-strength__text') as HTMLElement;
+      
+      bar.style.setProperty('--strength', `${strength}%`);
+      bar.style.setProperty('--strength-color', color);
+      textEl.textContent = password.length > 0 ? text : '';
+      textEl.style.color = color;
+    });
+    
+    // Password match validation
+    confirmPasswordInput.addEventListener('input', () => {
+      if (confirmPasswordInput.value && confirmPasswordInput.value !== passwordInput.value) {
+        passwordMatchError.style.display = 'block';
+        confirmPasswordInput.classList.add('form-input--error');
+      } else {
+        passwordMatchError.style.display = 'none';
+        confirmPasswordInput.classList.remove('form-input--error');
+      }
+    });
+    
+    // Form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Validate passwords match
+      if (passwordInput.value !== confirmPasswordInput.value) {
+        passwordMatchError.style.display = 'block';
+        confirmPasswordInput.classList.add('form-input--error');
+        confirmPasswordInput.focus();
+        return;
+      }
+      
+      // Show loading state
+      const btnText = submitBtn.querySelector('.btn-text') as HTMLElement;
+      const btnLoader = submitBtn.querySelector('.btn-loader') as HTMLElement;
+      btnText.style.display = 'none';
+      btnLoader.style.display = 'flex';
+      submitBtn.disabled = true;
+      
+      try {
+        const formData = new FormData(form);
+        const data = {
+          firstName: formData.get('firstName'),
+          lastName: formData.get('lastName'),
+          email: formData.get('email'),
+          phone: formData.get('phone'),
+          password: formData.get('password'),
+          accountType: formData.get('accountType'),
+          businessName: formData.get('businessName'),
+          category: formData.get('category'),
+          city: formData.get('city'),
+          newsletter: formData.get('newsletter') === 'on',
+        };
+        
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        console.log('Registration data:', data);
+        
+        // Redirect based on account type
+        if (data.accountType === 'provider') {
+          window.location.href = '/business/bun-venit';
+        } else {
+          window.location.href = '/?registered=true';
+        }
+      } catch (error) {
+        console.error('Registration error:', error);
+        alert('A apărut o eroare. Te rugăm să încerci din nou.');
+      } finally {
+        btnText.style.display = 'block';
+        btnLoader.style.display = 'none';
+        submitBtn.disabled = false;
+      }
+    });
+  });
+</script>

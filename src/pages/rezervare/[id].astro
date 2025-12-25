@@ -1,0 +1,666 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+
+export const prerender = false;
+
+const { id } = Astro.params;
+
+// Mock service data
+const service = {
+  id,
+  name: 'Dent Smile Studio',
+  category: 'Stomatologie',
+  address: 'Str. Victoriei 123, Sector 1, București',
+  phone: '0721 234 567',
+  services: [
+    { id: '1', name: 'Consultație', price: '100 lei', duration: '30 min' },
+    { id: '2', name: 'Detartraj', price: '150 lei', duration: '45 min' },
+    { id: '3', name: 'Albire dentară', price: '500 lei', duration: '60 min' },
+    { id: '4', name: 'Plombare', price: '200 lei', duration: '45 min' },
+  ],
+};
+
+// Generate available dates (next 14 days)
+const today = new Date();
+const dates = Array.from({ length: 14 }, (_, i) => {
+  const date = new Date(today);
+  date.setDate(date.getDate() + i + 1);
+  return date;
+});
+
+const timeSlots = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'];
+---
+
+<Layout title={`Rezervare - ${service.name}`}>
+  <Navbar />
+  
+  <main class="booking-page">
+    <div class="container">
+      <div class="booking-header">
+        <a href={`/serviciu/${id}`} class="back-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          Înapoi la serviciu
+        </a>
+        <h1 class="heading-lg">Rezervare la {service.name}</h1>
+        <p class="text-muted">{service.address}</p>
+      </div>
+      
+      <div class="booking-grid">
+        <div class="booking-form-wrapper">
+          <form id="booking-form" class="booking-form">
+            <!-- Step 1: Select Service -->
+            <div class="booking-step" id="step-1">
+              <h2 class="step-title">
+                <span class="step-number">1</span>
+                Alege serviciul
+              </h2>
+              <div class="service-options">
+                {service.services.map((s, i) => (
+                  <label class="service-option">
+                    <input type="radio" name="serviceId" value={s.id} required checked={i === 0} />
+                    <div class="service-option__content">
+                      <div class="service-option__info">
+                        <span class="service-option__name">{s.name}</span>
+                        <span class="service-option__duration">{s.duration}</span>
+                      </div>
+                      <span class="service-option__price">{s.price}</span>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+            
+            <!-- Step 2: Select Date -->
+            <div class="booking-step" id="step-2">
+              <h2 class="step-title">
+                <span class="step-number">2</span>
+                Alege data
+              </h2>
+              <div class="date-picker">
+                {dates.map((date, i) => {
+                  const dayName = date.toLocaleDateString('ro-RO', { weekday: 'short' });
+                  const dayNum = date.getDate();
+                  const month = date.toLocaleDateString('ro-RO', { month: 'short' });
+                  const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+                  const dateStr = date.toISOString().split('T')[0];
+                  
+                  return (
+                    <label class={`date-option ${isWeekend ? 'date-option--weekend' : ''}`}>
+                      <input type="radio" name="date" value={dateStr} required checked={i === 0} disabled={date.getDay() === 0} />
+                      <div class="date-option__content">
+                        <span class="date-option__day">{dayName}</span>
+                        <span class="date-option__num">{dayNum}</span>
+                        <span class="date-option__month">{month}</span>
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+            
+            <!-- Step 3: Select Time -->
+            <div class="booking-step" id="step-3">
+              <h2 class="step-title">
+                <span class="step-number">3</span>
+                Alege ora
+              </h2>
+              <div class="time-picker">
+                {timeSlots.map((time, i) => (
+                  <label class="time-option">
+                    <input type="radio" name="time" value={time} required checked={i === 0} />
+                    <span class="time-option__content">{time}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            
+            <!-- Step 4: Contact Details -->
+            <div class="booking-step" id="step-4">
+              <h2 class="step-title">
+                <span class="step-number">4</span>
+                Datele tale
+              </h2>
+              <div class="contact-form">
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label class="form-label form-label--required">Nume complet</label>
+                    <input type="text" name="userName" class="form-input" placeholder="Ion Popescu" required />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label form-label--required">Telefon</label>
+                    <input type="tel" name="userPhone" class="form-input" placeholder="07XX XXX XXX" required />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label form-label--required">Email</label>
+                  <input type="email" name="userEmail" class="form-input" placeholder="exemplu@email.ro" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Observații (opțional)</label>
+                  <textarea name="notes" class="form-input form-textarea" rows="3" placeholder="Menționează orice detalii relevante..."></textarea>
+                </div>
+              </div>
+            </div>
+            
+            <input type="hidden" name="serviceProviderId" value={id} />
+            <input type="hidden" name="serviceProviderName" value={service.name} />
+            
+            <button type="submit" class="btn btn--primary btn--lg btn--full" id="submit-btn">
+              <span class="btn-text">Confirmă rezervarea</span>
+              <span class="btn-loader" style="display: none;">Se procesează...</span>
+            </button>
+          </form>
+        </div>
+        
+        <aside class="booking-summary">
+          <div class="summary-card">
+            <h3>Rezumatul rezervării</h3>
+            <div class="summary-service">
+              <span class="summary-label">Serviciu</span>
+              <span class="summary-value" id="summary-service">Consultație</span>
+            </div>
+            <div class="summary-provider">
+              <span class="summary-label">Furnizor</span>
+              <span class="summary-value">{service.name}</span>
+            </div>
+            <div class="summary-datetime">
+              <span class="summary-label">Data și ora</span>
+              <span class="summary-value" id="summary-datetime">-</span>
+            </div>
+            <div class="summary-price">
+              <span class="summary-label">Preț estimat</span>
+              <span class="summary-value summary-value--price" id="summary-price">100 lei</span>
+            </div>
+            <div class="summary-note">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4M12 8h.01"/>
+              </svg>
+              Vei primi un email de confirmare după finalizarea rezervării.
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Success Modal -->
+  <div class="modal-overlay" id="success-modal">
+    <div class="modal modal--success">
+      <div class="success-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+      </div>
+      <h2>Rezervare confirmată!</h2>
+      <p>Am trimis detaliile rezervării pe email. Te așteptăm!</p>
+      <div class="success-actions">
+        <a href="/" class="btn btn--ghost">Acasă</a>
+        <a href={`/serviciu/${id}`} class="btn btn--primary">Vezi serviciul</a>
+      </div>
+    </div>
+  </div>
+  
+  <Footer />
+</Layout>
+
+<style>
+  .booking-page {
+    padding-top: 120px;
+    padding-bottom: 4rem;
+    min-height: 100vh;
+  }
+  
+  .booking-header {
+    margin-bottom: 3rem;
+  }
+  
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    transition: color 0.2s;
+  }
+  
+  .back-link:hover {
+    color: var(--accent-primary);
+  }
+  
+  .booking-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 2rem;
+    align-items: start;
+  }
+  
+  @media (max-width: 1024px) {
+    .booking-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .booking-summary {
+      order: -1;
+    }
+  }
+  
+  .booking-form-wrapper {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+  }
+  
+  .booking-step {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .booking-step:last-of-type {
+    border-bottom: none;
+    margin-bottom: 2rem;
+    padding-bottom: 0;
+  }
+  
+  .step-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+  
+  .step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+  
+  /* Service Options */
+  .service-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .service-option {
+    cursor: pointer;
+  }
+  
+  .service-option input {
+    display: none;
+  }
+  
+  .service-option__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    transition: all 0.2s;
+  }
+  
+  .service-option input:checked + .service-option__content {
+    border-color: var(--accent-primary);
+    background: rgba(0, 212, 170, 0.08);
+  }
+  
+  .service-option:hover .service-option__content {
+    border-color: var(--text-muted);
+  }
+  
+  .service-option__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .service-option__name {
+    font-weight: 500;
+  }
+  
+  .service-option__duration {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  
+  .service-option__price {
+    font-weight: 600;
+    color: var(--accent-primary);
+  }
+  
+  /* Date Picker */
+  .date-picker {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+  
+  .date-option {
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  
+  .date-option input {
+    display: none;
+  }
+  
+  .date-option__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.75rem 1rem;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    min-width: 70px;
+    transition: all 0.2s;
+  }
+  
+  .date-option input:checked + .date-option__content {
+    border-color: var(--accent-primary);
+    background: rgba(0, 212, 170, 0.08);
+  }
+  
+  .date-option input:disabled + .date-option__content {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  
+  .date-option:hover:not(:has(input:disabled)) .date-option__content {
+    border-color: var(--text-muted);
+  }
+  
+  .date-option__day {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  
+  .date-option__num {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  
+  .date-option__month {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  
+  /* Time Picker */
+  .time-picker {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .time-option {
+    cursor: pointer;
+  }
+  
+  .time-option input {
+    display: none;
+  }
+  
+  .time-option__content {
+    display: block;
+    text-align: center;
+    padding: 0.75rem;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  
+  .time-option input:checked + .time-option__content {
+    border-color: var(--accent-primary);
+    background: rgba(0, 212, 170, 0.08);
+    color: var(--accent-primary);
+  }
+  
+  .time-option:hover .time-option__content {
+    border-color: var(--text-muted);
+  }
+  
+  /* Contact Form */
+  .contact-form .form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  
+  @media (max-width: 640px) {
+    .contact-form .form-row-2 {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* Summary Card */
+  .summary-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    position: sticky;
+    top: 100px;
+  }
+  
+  .summary-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .summary-card > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+  }
+  
+  .summary-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+  
+  .summary-value {
+    font-weight: 500;
+  }
+  
+  .summary-value--price {
+    font-size: 1.25rem;
+    color: var(--accent-primary);
+  }
+  
+  .summary-price {
+    margin-top: 1rem;
+    padding-top: 1rem !important;
+    border-top: 1px solid var(--border-color);
+  }
+  
+  .summary-note {
+    margin-top: 1rem;
+    padding: 1rem !important;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+  
+  .summary-note svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  
+  /* Success Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+  }
+  
+  .modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .modal--success {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: 3rem;
+    text-align: center;
+    max-width: 400px;
+    transform: scale(0.9);
+    transition: transform 0.3s;
+  }
+  
+  .modal-overlay.active .modal--success {
+    transform: scale(1);
+  }
+  
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(0, 212, 170, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    color: var(--accent-primary);
+  }
+  
+  .modal--success h2 {
+    margin-bottom: 0.75rem;
+  }
+  
+  .modal--success p {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+  }
+  
+  .success-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+  }
+  
+  /* Button loader */
+  .btn-loader {
+    display: none;
+  }
+</style>
+
+<script define:vars={{ services: service.services }}>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('booking-form');
+    const summaryService = document.getElementById('summary-service');
+    const summaryDatetime = document.getElementById('summary-datetime');
+    const summaryPrice = document.getElementById('summary-price');
+    const submitBtn = document.getElementById('submit-btn');
+    const successModal = document.getElementById('success-modal');
+    
+    // Update summary on service change
+    form.querySelectorAll('input[name="serviceId"]').forEach(input => {
+      input.addEventListener('change', () => {
+        const service = services.find(s => s.id === input.value);
+        if (service) {
+          summaryService.textContent = service.name;
+          summaryPrice.textContent = service.price;
+        }
+      });
+    });
+    
+    // Update summary on date/time change
+    const updateDateTime = () => {
+      const dateInput = form.querySelector('input[name="date"]:checked');
+      const timeInput = form.querySelector('input[name="time"]:checked');
+      
+      if (dateInput && timeInput) {
+        const date = new Date(dateInput.value);
+        const formatted = date.toLocaleDateString('ro-RO', { 
+          weekday: 'long', 
+          day: 'numeric', 
+          month: 'long' 
+        });
+        summaryDatetime.textContent = `${formatted}, ${timeInput.value}`;
+      }
+    };
+    
+    form.querySelectorAll('input[name="date"], input[name="time"]').forEach(input => {
+      input.addEventListener('change', updateDateTime);
+    });
+    
+    // Initial update
+    updateDateTime();
+    
+    // Form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const btnText = submitBtn.querySelector('.btn-text');
+      const btnLoader = submitBtn.querySelector('.btn-loader');
+      
+      btnText.style.display = 'none';
+      btnLoader.style.display = 'block';
+      submitBtn.disabled = true;
+      
+      try {
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+        
+        // Get selected service name
+        const selectedService = services.find(s => s.id === data.serviceId);
+        data.serviceItemName = selectedService?.name || '';
+        
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        console.log('Booking data:', data);
+        
+        // Show success modal
+        successModal.classList.add('active');
+      } catch (error) {
+        console.error('Booking error:', error);
+        alert('A apărut o eroare. Te rugăm să încerci din nou.');
+      } finally {
+        btnText.style.display = 'block';
+        btnLoader.style.display = 'none';
+        submitBtn.disabled = false;
+      }
+    });
+  });
+</script>

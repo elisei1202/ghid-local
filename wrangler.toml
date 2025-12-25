@@ -1,0 +1,35 @@
+name = "localpro-ghid-servicii"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Cloudflare Pages configuration
+pages_build_output_dir = "./dist"
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "localpro-db"
+database_id = "your-database-id-here"
+
+# KV Namespace for sessions/cache
+[[kv_namespaces]]
+binding = "KV"
+id = "your-kv-id-here"
+
+# R2 Bucket for images
+[[r2_buckets]]
+binding = "IMAGES"
+bucket_name = "localpro-images"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+SITE_URL = "https://localpro.ro"
+
+# Development environment
+[env.development]
+vars = { ENVIRONMENT = "development", SITE_URL = "http://localhost:4321" }
+
+# Preview environment
+[env.preview]
+vars = { ENVIRONMENT = "preview" }

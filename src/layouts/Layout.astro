@@ -1,0 +1,52 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Găsește cei mai buni profesioniști locali - stomatologi, mecanici, frizerii, instalatori și multe altele.' } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content={description}>
+  <meta name="robots" content="index, follow">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content={title}>
+  <meta property="og:description" content={description}>
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ro_RO">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  
+  <title>{title}</title>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-orb bg-orb--primary"></div>
+  <div class="bg-orb bg-orb--secondary"></div>
+  
+  <slot />
+  
+  <script>
+    // Navbar scroll effect
+    const nav = document.querySelector('.nav');
+    if (nav) {
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+          nav.classList.add('nav--scrolled');
+        } else {
+          nav.classList.remove('nav--scrolled');
+        }
+      });
+    }
+  </script>
+</body>
+</html>

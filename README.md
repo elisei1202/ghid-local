@@ -45,8 +45,8 @@ Platformă modernă pentru găsirea și rezervarea serviciilor locale în Român
 
 ```bash
 # Clonează repository-ul
-git clone https://github.com/your-username/localpro.git
-cd localpro
+git clone https://github.com/elisei1202/ghid-local.git
+cd ghid-local
 
 # Instalează dependențele
 npm install
@@ -57,7 +57,38 @@ npm run dev
 
 ## 🌐 Deploy pe Cloudflare Pages
 
-### 1. Pregătire Cloudflare
+### Opțiunea 1: Deploy automat prin GitHub (Recomandat)
+
+1. **Conectează repository-ul la Cloudflare Pages:**
+   - Mergi la [Cloudflare Dashboard](https://dash.cloudflare.com/)
+   - Selectează **Pages** → **Create a project**
+   - Alege **Connect to Git**
+   - Autorizează Cloudflare să acceseze GitHub
+   - Selectează repository-ul `elisei1202/ghid-local`
+
+2. **Configurează build settings:**
+   - **Framework preset**: Astro
+   - **Build command**: `npm run build`
+   - **Build output directory**: `dist`
+   - **Root directory**: `/` (sau lasă gol)
+
+3. **Configurează variabilele de mediu:**
+   - Adaugă variabilele necesare în secțiunea **Environment variables**
+   - `NODE_VERSION`: `20` (sau versiunea dorită)
+
+4. **Configurează D1 Database, KV și R2:**
+   - În secțiunea **Settings** → **Functions**, configurează:
+     - **D1 Database bindings**: Adaugă `localpro-db` (creează-o mai întâi)
+     - **KV Namespace bindings**: Adaugă namespace-ul pentru sesiuni
+     - **R2 Bucket bindings**: Adaugă bucket-ul pentru imagini
+
+5. **Deploy automat:**
+   - Cloudflare Pages va face deploy automat la fiecare push pe branch-ul `main`
+   - Preview deployments vor fi create pentru fiecare Pull Request
+
+### Opțiunea 2: Deploy manual
+
+#### 1. Pregătire Cloudflare
 
 ```bash
 # Autentifică-te în Cloudflare
@@ -73,17 +104,20 @@ npx wrangler kv:namespace create KV
 npx wrangler r2 bucket create localpro-images
 ```
 
-### 2. Actualizează wrangler.toml
+#### 2. Actualizează wrangler.toml
 
-Înlocuiește ID-urile în `wrangler.toml` cu cele generate.
+Înlocuiește ID-urile în `wrangler.toml` cu cele generate:
+- `database_id` pentru D1
+- `id` pentru KV namespace
+- Actualizează `bucket_name` pentru R2 dacă este necesar
 
-### 3. Inițializează baza de date
+#### 3. Inițializează baza de date
 
 ```bash
 npx wrangler d1 execute localpro-db --file=./schema.sql
 ```
 
-### 4. Deploy
+#### 4. Deploy
 
 ```bash
 # Build proiect
@@ -91,6 +125,18 @@ npm run build
 
 # Deploy pe Cloudflare Pages
 npx wrangler pages deploy dist
+```
+
+### Configurare D1 Database pentru Production
+
+După ce ai creat D1 database, inițializează schema:
+
+```bash
+# Pentru production
+npx wrangler d1 execute localpro-db --file=./schema.sql --remote
+
+# Pentru local development
+npx wrangler d1 execute localpro-db --file=./schema.sql --local
 ```
 
 ## 📱 Funcționalități
